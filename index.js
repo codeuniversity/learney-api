@@ -86,10 +86,10 @@ function printError(errorCode, res) {
   });
 }
 
-apiRoutes.post('/login', function(req, res) {
+apiRoutes.get('/login', function(req, res) {
   User.findOne({
-    email: req.body.email,
-    password: req.body.password
+    email: req.query.email,
+    password: req.query.password
   }, function(err, user) {
     if (err) return console.error(err);
     try {
@@ -124,19 +124,19 @@ apiRoutes.post('/createUser', function(req, res) {
   });
 });
 
-apiRoutes.post('/getUserDetails', function(req, res) {
+apiRoutes.get('/getUserDetails', function(req, res) {
   User.count({
-    _id: jwt.verify(req.body.token, secret).id
+    _id: jwt.verify(req.query.token, secret).id
   }, function(err, count) {
     if (count > 0) {
       var db_learneys;
       Learney.find({
-        user_id: jwt.verify(req.body.token, secret).id
+        user_id: jwt.verify(req.query.token, secret).id
       }, 'name field', function(err, learney) {
         handleErrors();
         db_learneys = learney;
         User.findOne({
-          _id: jwt.verify(req.body.token, secret).id
+          _id: jwt.verify(req.query.token, secret).id
         }, function(err, user) {
           handleErrors();
           res.json({
@@ -234,14 +234,14 @@ apiRoutes.post('/createEntry', function(req, res) {
   });
 });
 
-apiRoutes.post('/getLearney', function(req, res) {
+apiRoutes.get('/getLearney', function(req, res) {
   User.count({
-    _id: jwt.verify(req.body.token, secret).id
+    _id: jwt.verify(req.query.token, secret).id
   }, function(err, count) {
     if (count > 0) {
       Learney.findOne({
-        user_id: jwt.verify(req.body.token, secret).id,
-        _id: req.body.learney_id
+        user_id: jwt.verify(req.query.token, secret).id,
+        _id: req.query.learney_id
       }).populate({
         path: 'branches',
         populate: {
@@ -251,6 +251,7 @@ apiRoutes.post('/getLearney', function(req, res) {
         console.error(err);
         res.json({
           status: "OK",
+          learney: result
         });
       });
     } else {
