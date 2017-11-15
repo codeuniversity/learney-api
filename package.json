@@ -1,0 +1,30 @@
+{
+  "name": "learney-api",
+  "version": "1.0.0",
+  "description": "API for Learney, a project management tool with a focus on visualisation.",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.0",
+    "mongoose": "^4.13.1",
+    "reading-time": "^1.1.0",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeuniversity/learney-api.git"
+  },
+  "author": "Lennart Schoch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codeuniversity/learney-api/issues"
+  },
+  "homepage": "https://github.com/codeuniversity/learney-api#readme"
+}
