@@ -183,16 +183,21 @@ apiRoutes.post('/createBranch', function(req, res) {
     _id: jwt.verify(req.body.token, secret).id
   }, function(err, count) {
     if (count > 0) {
-      new Learney({
+      new Branch({
         name: req.body.name,
-        field: req.body.field,
-        deadline: req.body.deadline,
-        branches: [],
-        user_id: jwt.verify(req.body.token, secret).id
-      }).save(function(err, user) {
-        handleErrors();
-        res.json({
-          status: "OK"
+        entries: []
+      }).save().then(function(branch) {
+        Learney.update({
+          _id: req.body.learney_id
+        }, {
+          $push: {
+            branches: branch._id
+          }
+        }).then(function(inner_entry) {
+          console.error(err);
+          res.json({
+            status: "OK"
+          });
         });
       });
     } else {
@@ -229,6 +234,27 @@ apiRoutes.post('/createEntry', function(req, res) {
             });
           });
         }
+      });
+    }
+  });
+});
+
+apiRoutes.post('/editLearney', function(req, res) {
+  User.count({
+    _id: jwt.verify(req.body.token, secret).id
+  }, function(err, count) {
+    if (count > 0) {
+      Learney.update({
+        _id: req.body.learney_id
+      }, {
+        $set: {
+          name: req.body.name,
+          field: req.body.field
+        }
+      }).then(function() {
+        res.json({
+          status: "OK",
+        });
       });
     }
   });
