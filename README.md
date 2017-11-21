@@ -1,7 +1,7 @@
 # Learney API
 #### Learney is a product management tool with a focus on visualisation, displaying your learning goals in a well organized tree chart and helping you to estimate the time needed for reaching your goals.
 
-This API was written in JavaScript, using NodeJS, and basically acts as a handler for the underlying MongoDB database. That's why it is crucial to have an instance of MongoDB installed and running. Then, simply install all dependencies using `npm install` and run the script using `node index.js`.
+This API was written in JavaScript, using NodeJS, and basically acts as a handler for the underlying MongoDB database. That's why it is crucial to have an instance of MongoDB installed and running. Then, simply install all dependencies using `npm install` and run the script using `node index.js`. Then, the API can be accessed at http://localhost:8080/api/.
 
 At the moment, the API only serves the minimal amount of functions, which are important for logging in, creating users, creating learning journeys and retrieving them. Also, I've added functions for developers like `clearUsers()` and `getAllUsers()`. Those can only be run within the script.
 
@@ -17,4 +17,8 @@ For using the API, after you created a user, you will need to generate an API to
 | /createLearney | Create a new learning journey. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'field': INSERT_HERE} | POST |
 | /createBranch | Create a new branch within a learning journey. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'learney_id': INSERT_HERE} | POST |
 | /createEntry | Create a new entry within a branch. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'description': INSERT_HERE, 'url': INSERT_HERE, 'branch_id': INSERT_HERE} | POST |
+| /editLearney | Replaces a learneys properties with user-defined values. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'field': INSERT_HERE, 'learney_id': INSERT_HERE} | POST |
+| /editBranch | Replaces a branches properties with user-defined values. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'branch_id': INSERT_HERE} | POST |
+| /editEntry | Replaces an entries properties with user-defined values. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'description': INSERT_HERE, 'url': INSERT_HERE, 'entry_id': INSERT_HERE | POST |
+| /finishEntry | Marks an entry as 'finished'. | {'token': INSERT_HERE, 'name': INSERT_HERE, 'description': INSERT_HERE, 'url': INSERT_HERE, 'entry_id': INSERT_HERE | POST |
 | /getLearney | Retrieves a specific learning journey by its ID. | {'token': INSERT_HERE, 'learney_id': INSERT_HERE} | GET |

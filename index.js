@@ -59,17 +59,6 @@ var Learney = mongoose.model('Learney', learneySchema);
 var Branch = mongoose.model('Branch', branchSchema);
 var BranchEntry = mongoose.model('BranchEntry', linkSchema);
 
-function handleErrors() {
-  err = "";
-  if (err) {
-    res.json({
-      status: "error",
-      error: "An unknown error occurred."
-    });
-    console.log(err);
-  }
-}
-
 function printError(errorCode, res) {
   var errorMessage
   switch (errorCode) {
@@ -86,6 +75,11 @@ function printError(errorCode, res) {
   });
 }
 
+apiRoutes.get('/*',function(req,res,next){
+    res.header('Access-Control-Allow-Origin' , '*');
+    next();
+});
+
 apiRoutes.get('/login', function(req, res) {
   User.findOne({
     email: req.query.email,
@@ -100,7 +94,6 @@ apiRoutes.get('/login', function(req, res) {
         }, secret)
       });
     } catch (err) {
-      console.log(err);
       res.json({
         status: "error",
         error: "The provided user credentials do not match."
@@ -117,7 +110,6 @@ apiRoutes.post('/createUser', function(req, res) {
     email: req.body.email,
     password: req.body.password
   }).save(function(err, user) {
-    handleErrors();
     res.json({
       status: "OK"
     });
@@ -133,12 +125,10 @@ apiRoutes.get('/getUserDetails', function(req, res) {
       Learney.find({
         user_id: jwt.verify(req.query.token, secret).id
       }, 'name field', function(err, learney) {
-        handleErrors();
         db_learneys = learney;
         User.findOne({
           _id: jwt.verify(req.query.token, secret).id
         }, function(err, user) {
-          handleErrors();
           res.json({
             status: "OK",
             username: user.username,
@@ -167,7 +157,6 @@ apiRoutes.post('/createLearney', function(req, res) {
         branches: [],
         user_id: jwt.verify(req.body.token, secret).id
       }).save(function(err, user) {
-        handleErrors();
         res.json({
           status: "OK"
         });
@@ -251,6 +240,73 @@ apiRoutes.post('/editLearney', function(req, res) {
           name: req.body.name,
           field: req.body.field
         }
+      }).then(function() {
+        res.json({
+          status: "OK",
+        });
+      });
+    }
+  });
+});
+
+apiRoutes.post('/editBranch', function(req, res) {
+  User.count({
+    _id: jwt.verify(req.body.token, secret).id
+  }, function(err, count) {
+    if (count > 0) {
+      Branch.update({
+        _id: req.body.branch_id
+      }, {
+        $set: {
+        name: req.body.name,
+      }
+      }).then(function() {
+        res.json({
+          status: "OK",
+        });
+      });
+    }
+  });
+});
+
+apiRoutes.post('/editEntry', function(req, res) {
+  User.count({
+    _id: jwt.verify(req.body.token, secret).id
+  }, function(err, count) {
+    if (count > 0) {
+      request(req.body.url, function(error, response, html) {
+        if (!error && response.statusCode == 200) {
+      BranchEntry.update({
+        _id: req.body.entry_id
+      }, {
+        $set: {
+        name: req.body.name,
+        description: req.body.description,
+        url: req.body.url,
+        readingTime: Math.round(readingTime(cheerio.load(html).text()).minutes)
+      }
+      }).then(function() {
+        res.json({
+          status: "OK",
+        });
+      });
+    }
+  });
+  }
+});
+});
+
+apiRoutes.post('/finishEntry', function(req, res) {
+  User.count({
+    _id: jwt.verify(req.body.token, secret).id
+  }, function(err, count) {
+    if (count > 0) {
+      BranchEntry.update({
+        _id: req.body.entry_id
+      }, {
+        $set: {
+        finished: true
+      }
       }).then(function() {
         res.json({
           status: "OK",
